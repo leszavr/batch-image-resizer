@@ -4,6 +4,7 @@ namespace App\ImagePipeline;
 
 use App\ImagePipeline\Contracts\PipelineStep;
 use App\ImagePipeline\Steps\CropStep;
+use App\ImagePipeline\Steps\FilterStep;
 use App\ImagePipeline\Steps\FlipStep;
 use App\ImagePipeline\Steps\ResizeStep;
 use App\ImagePipeline\Steps\RotateStep;
@@ -24,6 +25,7 @@ class ImagePipelineService
         'flip'      => FlipStep::class,
         'crop'      => CropStep::class,
         'watermark' => WatermarkStep::class,
+        'filter'    => FilterStep::class,
     ];
 
     public function __construct()

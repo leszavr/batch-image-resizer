@@ -6,25 +6,25 @@ return [
     | File limits
     |--------------------------------------------------------------------------
     */
-    'max_file_size_mb'       => (int) env('BIR_MAX_FILE_SIZE_MB', 50),
-    'max_files_per_job'      => (int) env('BIR_MAX_FILES_PER_JOB', 100),
-    'max_files_free'         => (int) env('BIR_MAX_FILES_FREE', 10),
-    'max_file_size_free_mb'  => (int) env('BIR_MAX_FILE_SIZE_FREE_MB', 10),
+    'max_file_size_mb'       => (int) env('IPP_MAX_FILE_SIZE_MB', 50),
+    'max_files_per_job'      => (int) env('IPP_MAX_FILES_PER_JOB', 100),
+    'max_files_free'         => (int) env('IPP_MAX_FILES_FREE', 10),
+    'max_file_size_free_mb'  => (int) env('IPP_MAX_FILE_SIZE_FREE_MB', 10),
 
     /*
     |--------------------------------------------------------------------------
     | Storage
     |--------------------------------------------------------------------------
     */
-    'storage_ttl_hours' => (int) env('BIR_STORAGE_TTL_HOURS', 24),
+    'storage_ttl_hours' => (int) env('IPP_STORAGE_TTL_HOURS', 24),
 
     /*
     |--------------------------------------------------------------------------
     | Queue
     |--------------------------------------------------------------------------
     */
-    'queue'         => env('BIR_QUEUE', 'image-processing'),
-    'queue_timeout' => (int) env('BIR_QUEUE_TIMEOUT', 300),
+    'queue'         => env('IPP_QUEUE', 'image-processing'),
+    'queue_timeout' => (int) env('IPP_QUEUE_TIMEOUT', 300),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,5 +38,5 @@ return [
     | Pipeline steps available to users
     |--------------------------------------------------------------------------
     */
-    'pipeline_steps' => ['resize', 'rotate', 'flip', 'crop', 'watermark'],
+    'pipeline_steps' => ['resize', 'rotate', 'flip', 'crop', 'watermark', 'filter'],
 ];

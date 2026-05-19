@@ -558,5 +558,152 @@ return array (
         ),
       ),
     ),
+    'tools' => 
+    array (
+      'meta' => 
+      array (
+        'title' => 'Online Image Tools',
+        'index_title' => 'Image Tools — Free Online Editors',
+      ),
+      'index' => 
+      array (
+        'title' => 'Image Tools',
+        'subtitle' => 'Free online tools to edit and transform your images instantly',
+      ),
+      'category' => 
+      array (
+        'basic' => 'Basic Tools',
+        'filters' => 'Filters & Effects',
+      ),
+      'back_to_tools' => 'Back to all tools',
+      'upload' => 
+      array (
+        'title' => 'Upload Image',
+        'drag_drop' => 'Drag & drop your image here',
+        'or_click' => 'or click to browse',
+        'processing' => 'Processing...',
+        'complete' => 'Complete!',
+      ),
+      'preview' => 
+      array (
+        'title' => 'Preview',
+        'empty' => 'Upload an image to see the preview',
+        'hold_to_compare' => 'Hold to compare',
+        'download' => 'Download',
+      ),
+      'errors' => 
+      array (
+        'not_image' => 'Please upload a valid image file',
+        'too_large' => 'File size exceeds 10MB limit',
+        'upload_failed' => 'Upload failed, please try again',
+        'processing_failed' => 'Image processing failed',
+      ),
+      'crop' => 
+      array (
+        'name' => 'Crop Image',
+        'description' => 'Crop your images to any size or aspect ratio',
+        'settings' => 'Crop Settings',
+        'width' => 'Width (px)',
+        'height' => 'Height (px)',
+      ),
+      'rotate' => 
+      array (
+        'name' => 'Rotate Image',
+        'description' => 'Rotate images by any angle',
+        'settings' => 'Rotation Settings',
+        'angle' => 'Rotation Angle',
+      ),
+      'flip' => 
+      array (
+        'name' => 'Flip Image',
+        'description' => 'Flip images horizontally or vertically',
+        'settings' => 'Flip Settings',
+        'direction' => 'Flip Direction',
+        'horizontal' => 'Horizontal',
+        'vertical' => 'Vertical',
+      ),
+      'resize' => 
+      array (
+        'name' => 'Resize Image',
+        'description' => 'Resize images to exact dimensions',
+        'settings' => 'Resize Settings',
+        'width' => 'Width (px)',
+        'height' => 'Height (px)',
+      ),
+      'brightness' => 
+      array (
+        'name' => 'Brightness',
+        'description' => 'Adjust image brightness',
+        'settings' => 'Brightness Settings',
+        'value' => 'Brightness',
+      ),
+      'contrast' => 
+      array (
+        'name' => 'Contrast',
+        'description' => 'Adjust image contrast',
+        'settings' => 'Contrast Settings',
+        'value' => 'Contrast',
+      ),
+      'saturation' => 
+      array (
+        'name' => 'Saturation',
+        'description' => 'Adjust image saturation',
+        'settings' => 'Saturation Settings',
+        'value' => 'Saturation',
+      ),
+      'exposure' => 
+      array (
+        'name' => 'Exposure',
+        'description' => 'Control the exposure of your images',
+        'settings' => 'Exposure Settings',
+        'value' => 'Exposure',
+      ),
+      'temperature' => 
+      array (
+        'name' => 'Temperature',
+        'description' => 'Change the color temperature of your images',
+        'settings' => 'Temperature Settings',
+        'value' => 'Temperature',
+        'cool' => 'Cool',
+        'warm' => 'Warm',
+      ),
+      'gamma' => 
+      array (
+        'name' => 'Gamma',
+        'description' => 'Fine-tune the gamma levels in your images',
+        'settings' => 'Gamma Settings',
+        'value' => 'Gamma',
+      ),
+      'clarity' => 
+      array (
+        'name' => 'Clarity',
+        'description' => 'Improve the clarity of your images',
+        'settings' => 'Clarity Settings',
+        'value' => 'Clarity',
+        'soft' => 'Soft',
+        'sharp' => 'Sharp',
+      ),
+      'filters' => 
+      array (
+        'name' => 'Photo Filters',
+        'description' => 'Apply professional photo filters and effects',
+        'settings' => 'Filter Settings',
+        'brightness' => 'Brightness',
+        'contrast' => 'Contrast',
+        'blur' => 'Blur',
+        'grayscale' => 'Grayscale',
+        'darken' => 'Darken',
+        'lighten' => 'Lighten',
+        'low' => 'Low',
+        'high' => 'High',
+        'desaturate' => 'Desaturate',
+        'vivid' => 'Vivid',
+        'normal' => 'Normal',
+        'cool' => 'Cool',
+        'warm' => 'Warm',
+        'soft' => 'Soft',
+        'sharp' => 'Sharp',
+      ),
+    ),
   ),
 );

@@ -58,7 +58,7 @@
                 {{ dbt('job.download_zip') }}
             </a>
             <p class="text-xs text-gray-500 mt-2">
-                {{ dbt('job.archive_ttl', ['hours' => config('bir.storage_ttl_hours')]) }}
+                {{ dbt('job.archive_ttl', ['hours' => config('ipp.storage_ttl_hours')]) }}
             </p>
 
             <div class="mt-5 bg-gray-950 border border-gray-800 rounded-xl p-4" x-show="resultFiles.length > 0" x-cloak>

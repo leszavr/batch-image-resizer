@@ -1,0 +1,28 @@
+# Image Processing Platform Installer - Security Settings
+
+# Protect sensitive files
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Deny access to .env files
+    RewriteRule \.env$ - [F]
+    
+    # Disable directory browsing
+    Options -Indexes
+    
+    # Protect backup files
+    <FilesMatch "^\.">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+# Disable server signature
+ServerSignature Off
+
+# PHP settings (if .htaccess allowed)
+<IfModule mod_php.c>
+    php_flag display_errors on
+    php_value memory_limit 256M
+    php_value max_execution_time 300
+</IfModule>

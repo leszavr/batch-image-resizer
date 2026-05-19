@@ -21,8 +21,8 @@ class AdminPlanController extends Controller
         $plans = Plan::query()->orderBy('sort_order')->orderBy('id')->get();
         $locales = Locale::query()->orderByDesc('is_default')->orderBy('name')->get();
         $defaultLocale = $this->localeService->defaultLocale();
-        $formatOptions = array_values((array) config('bir.output_formats', []));
-        $operationOptions = array_values((array) config('bir.pipeline_steps', []));
+        $formatOptions = array_values((array) config('ipp.output_formats', []));
+        $operationOptions = array_values((array) config('ipp.pipeline_steps', []));
         $featureOptions = [
             'watermark' => dbt('admin.plans.features.watermark'),
             'api_access' => dbt('admin.plans.features.api_access'),

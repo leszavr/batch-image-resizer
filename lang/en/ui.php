@@ -11,7 +11,7 @@ return array (
   ),
   'translations' => 
   array (
-    'brand' => 'BIR',
+    'brand' => 'IPP',
     'meta' => 
     array (
       'description' => 'Free online tool for batch image resizing, conversion, and processing',
@@ -153,18 +153,28 @@ return array (
     ),
     'jobs' => 
     array (
-      'messages' => 
-      array (
-        'created' => 'Job created and queued.',
-        'daily_limit_reached' => 'You have reached your daily job limit (:limit/day). Upgrade your plan.',
-        'max_files_exceeded' => 'Maximum :max files per job on your current plan.',
-        'file_too_large' => 'File exceeds the :limit MB limit.',
-        'output_format_unavailable' => 'Selected format is not available on your plan.',
-        'watermark_unavailable' => 'Watermark feature is not available on your plan.',
-        'operation_unavailable' => 'Operation :operation is not available on your plan.',
-        'archive_not_ready' => 'Archive is not ready yet.',
-        'archive_missing' => 'Archive not found or storage period expired.',
-      ),
+        'messages' => 
+        array (
+          'created' => 'Job created and queued.',
+          'daily_limit_reached' => 'You have reached your daily job limit (:limit/day). Upgrade your plan.',
+          'max_files_exceeded' => 'Maximum :max files per job on your current plan.',
+          'file_too_large' => 'File exceeds the :limit MB limit.',
+          'output_format_unavailable' => 'Selected format is not available on your plan.',
+          'watermark_unavailable' => 'Watermark feature is not available on your plan.',
+          'operation_unavailable' => 'Operation :operation is not available on your plan.',
+          'archive_not_ready' => 'Archive is not ready yet.',
+          'archive_missing' => 'Archive not found or storage period expired.',
+          'filter_validation' => 
+          array (
+            'brightness' => 'Brightness must be between -100 and 100.',
+            'contrast' => 'Contrast must be between -100 and 100.',
+            'saturation' => 'Saturation must be between 0 and 200.',
+            'blur' => 'Blur must be between 0 and 20.',
+            'sepia' => 'Sepia must be between 0 and 100.',
+            'grayscale' => 'Grayscale must be between 0 and 100.',
+            'hue_rotate' => 'Hue rotate must be between 0 and 360.',
+          ),
+        ),
     ),
     'api' => 
     array (
@@ -494,6 +504,7 @@ return array (
         'rotate' => 'Rotate',
         'flip' => 'Flip',
         'rename' => 'Rename',
+        'filters' => 'Image Filters',
       ),
       'quality' => 'Quality (JPEG/WebP)',
       'resize' => 
@@ -557,6 +568,175 @@ return array (
           'failed' => 'Error',
           'expired' => 'Expired',
         ),
+      ),
+    ),
+    'tools' => 
+    array (
+      'meta' => 
+      array (
+        'title' => 'Online Image Tools',
+        'index_title' => 'Image Tools — Free Online Editors',
+      ),
+      'index' => 
+      array (
+        'title' => 'Image Tools',
+        'subtitle' => 'Free online tools to edit and transform your images instantly',
+      ),
+      'category' => 
+      array (
+        'basic' => 'Basic Tools',
+        'filters' => 'Filters & Effects',
+      ),
+      'features' => 
+      array (
+        'dragdrop' => 
+        array (
+          'title' => 'Drag & Drop',
+          'desc' => 'Simply drag your image to start editing',
+        ),
+        'preview' => 
+        array (
+          'title' => 'Live Preview',
+          'desc' => 'See changes instantly before downloading',
+        ),
+        'download' => 
+        array (
+          'title' => 'Instant Download',
+          'desc' => 'Get your processed image in seconds',
+        ),
+      ),
+      'back_to_tools' => 'Back to all tools',
+      'upload' => 
+      array (
+        'title' => 'Upload Image',
+        'drag_drop' => 'Drag & drop your image here',
+        'or_click' => 'or click to browse',
+        'processing' => 'Processing...',
+        'complete' => 'Complete!',
+      ),
+      'preview' => 
+      array (
+        'title' => 'Preview',
+        'empty' => 'Upload an image to see the preview',
+        'hold_to_compare' => 'Hold to compare',
+        'download' => 'Download',
+      ),
+      'errors' => 
+      array (
+        'not_image' => 'Please upload a valid image file',
+        'too_large' => 'File size exceeds 10MB limit',
+        'upload_failed' => 'Upload failed, please try again',
+        'processing_failed' => 'Image processing failed',
+      ),
+      'crop' => 
+      array (
+        'name' => 'Crop Image',
+        'description' => 'Crop your images to any size or aspect ratio',
+        'settings' => 'Crop Settings',
+        'width' => 'Width (px)',
+        'height' => 'Height (px)',
+        'position_x' => 'X Position',
+        'position_y' => 'Y Position',
+      ),
+      'rotate' => 
+      array (
+        'name' => 'Rotate Image',
+        'description' => 'Rotate images by any angle',
+        'settings' => 'Rotation Settings',
+        'angle' => 'Rotation Angle',
+      ),
+      'flip' => 
+      array (
+        'name' => 'Flip Image',
+        'description' => 'Flip images horizontally or vertically',
+        'settings' => 'Flip Settings',
+        'direction' => 'Flip Direction',
+        'horizontal' => 'Horizontal',
+        'vertical' => 'Vertical',
+      ),
+      'resize' => 
+      array (
+        'name' => 'Resize Image',
+        'description' => 'Resize images to exact dimensions',
+        'settings' => 'Resize Settings',
+        'width' => 'Width (px)',
+        'height' => 'Height (px)',
+        'maintain_aspect' => 'Maintain aspect ratio',
+        'presets' => 'Quick presets:',
+      ),
+      'brightness' => 
+      array (
+        'name' => 'Brightness',
+        'description' => 'Adjust image brightness',
+        'settings' => 'Brightness Settings',
+        'value' => 'Brightness',
+      ),
+      'contrast' => 
+      array (
+        'name' => 'Contrast',
+        'description' => 'Adjust image contrast',
+        'settings' => 'Contrast Settings',
+        'value' => 'Contrast',
+      ),
+      'saturation' => 
+      array (
+        'name' => 'Saturation',
+        'description' => 'Adjust image saturation',
+        'settings' => 'Saturation Settings',
+        'value' => 'Saturation',
+      ),
+      'exposure' => 
+      array (
+        'name' => 'Exposure',
+        'description' => 'Control the exposure of your images',
+        'settings' => 'Exposure Settings',
+        'value' => 'Exposure',
+      ),
+      'temperature' => 
+      array (
+        'name' => 'Temperature',
+        'description' => 'Change the color temperature of your images',
+        'settings' => 'Temperature Settings',
+        'value' => 'Temperature',
+        'cool' => 'Cool',
+        'warm' => 'Warm',
+      ),
+      'gamma' => 
+      array (
+        'name' => 'Gamma',
+        'description' => 'Fine-tune the gamma levels in your images',
+        'settings' => 'Gamma Settings',
+        'value' => 'Gamma',
+      ),
+      'clarity' => 
+      array (
+        'name' => 'Clarity',
+        'description' => 'Improve the clarity of your images',
+        'settings' => 'Clarity Settings',
+        'value' => 'Clarity',
+        'soft' => 'Soft',
+        'sharp' => 'Sharp',
+      ),
+      'filters' => 
+      array (
+        'name' => 'Photo Filters',
+        'description' => 'Apply professional photo filters and effects',
+        'settings' => 'Filter Settings',
+        'brightness' => 'Brightness',
+        'contrast' => 'Contrast',
+        'blur' => 'Blur',
+        'grayscale' => 'Grayscale',
+        'darken' => 'Darken',
+        'lighten' => 'Lighten',
+        'low' => 'Low',
+        'high' => 'High',
+        'desaturate' => 'Desaturate',
+        'vivid' => 'Vivid',
+        'normal' => 'Normal',
+        'cool' => 'Cool',
+        'warm' => 'Warm',
+        'soft' => 'Soft',
+        'sharp' => 'Sharp',
       ),
     ),
   ),

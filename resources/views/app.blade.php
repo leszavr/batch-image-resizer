@@ -4,8 +4,8 @@
 
 @section('content')
 @php
-    $allowedFormats = $capabilities['output_formats'] ?? config('bir.output_formats');
-    $allowedSteps = $capabilities['pipeline_steps'] ?? config('bir.pipeline_steps');
+    $allowedFormats = $capabilities['output_formats'] ?? config('ipp.output_formats');
+    $allowedSteps = $capabilities['pipeline_steps'] ?? config('ipp.pipeline_steps');
     $rotateOptions = [
         'none' => dbt('app.rotate.none'),
         'left' => dbt('app.rotate.left'),
@@ -89,7 +89,7 @@
                     </svg>
                     <p class="text-gray-200 text-lg font-semibold mb-2">{{ dbt('app.upload_zone_title') }}</p>
                     <p class="text-gray-400 font-medium">{!! dbt('app.upload_zone_hint') !!}</p>
-                    <p class="text-gray-600 text-sm mt-2">{{ dbt('app.upload_zone_formats', ['size' => config('bir.max_file_size_mb')]) }}</p>
+                    <p class="text-gray-600 text-sm mt-2">{{ dbt('app.upload_zone_formats', ['size' => config('ipp.max_file_size_mb')]) }}</p>
                 </div>
 
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none" x-show="files.length > 0">
@@ -288,6 +288,130 @@
                         </div>
                     </div>
                 </div>
+
+                @if(in_array('filter', $allowedSteps, true))
+                <div class="card-panel p-0 overflow-hidden" x-data="{ 
+                    filtersEnabled: false,
+                    filterValues: { brightness: 0, contrast: 0, saturation: 100, blur: 0, sepia: 0, grayscale: 0, hueRotate: 0 },
+                    updateFilter(name, value) { this.filterValues[name] = parseInt(value); }
+                }">
+                    <button type="button"
+                            class="w-full flex items-center justify-between px-4 py-3 text-left"
+                            @click="toggleMobilePanel('filter')"
+                            :aria-expanded="panelVisible('filter')">
+                        <h3 class="text-sm font-semibold text-gray-300">{{ dbt('app.sections.filters') }}</h3>
+                        <svg class="w-4 h-4 text-gray-500 transition-transform lg:hidden" :class="panelVisible('filter') ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="px-4 pb-4 border-t border-gray-800" x-show="panelVisible('filter')" x-transition.duration.300ms>
+                        <!-- Toggle -->
+                        <div class="mt-3 flex items-center justify-between p-3 bg-gray-900 rounded-lg">
+                            <div>
+                                <div class="text-sm font-medium text-gray-200">Apply Filters</div>
+                                <div class="text-xs text-gray-500">Adjust brightness, contrast, saturation and more</div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" x-model="filtersEnabled" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
+                            </label>
+                        </div>
+                        
+                        <input type="hidden" name="filters_enabled" :value="filtersEnabled ? '1' : '0'">
+                        <input type="hidden" name="filter_brightness" :value="filterValues.brightness">
+                        <input type="hidden" name="filter_contrast" :value="filterValues.contrast">
+                        <input type="hidden" name="filter_saturation" :value="filterValues.saturation">
+                        <input type="hidden" name="filter_blur" :value="filterValues.blur">
+                        <input type="hidden" name="filter_sepia" :value="filterValues.sepia">
+                        <input type="hidden" name="filter_grayscale" :value="filterValues.grayscale">
+                        <input type="hidden" name="filter_hue_rotate" :value="filterValues.hueRotate">
+                        
+                        <!-- Filter Controls -->
+                        <div x-show="filtersEnabled" x-transition class="mt-4 space-y-3">
+                            <!-- Preview Canvas -->
+                            <div class="bg-gray-950 rounded-lg p-4 text-center min-h-[150px] flex items-center justify-center">
+                                <div x-show="!hasFiles" class="text-gray-500 text-sm">
+                                    Upload images to preview filters
+                                </div>
+                                <canvas id="preview-canvas" x-show="hasFiles" class="max-w-full max-h-[250px] rounded-lg shadow-lg"></canvas>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div class="bg-gray-900 rounded-lg p-3">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                        <span>Brightness</span>
+                                        <span x-text="filterValues.brightness + '%'" class="text-violet-400 font-mono"></span>
+                                    </div>
+                                    <input type="range" min="-100" max="100" value="0" @input="updateFilter('brightness', $event.target.value)" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                                </div>
+                                
+                                <div class="bg-gray-900 rounded-lg p-3">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                        <span>Contrast</span>
+                                        <span x-text="filterValues.contrast + '%'" class="text-violet-400 font-mono"></span>
+                                    </div>
+                                    <input type="range" min="-100" max="100" value="0" @input="updateFilter('contrast', $event.target.value)" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                                </div>
+                                
+                                <div class="bg-gray-900 rounded-lg p-3">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                        <span>Saturation</span>
+                                        <span x-text="filterValues.saturation + '%'" class="text-violet-400 font-mono"></span>
+                                    </div>
+                                    <input type="range" min="0" max="200" value="100" @input="updateFilter('saturation', $event.target.value)" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                                </div>
+                                
+                                <div class="bg-gray-900 rounded-lg p-3">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                        <span>Blur</span>
+                                        <span x-text="filterValues.blur + 'px'" class="text-violet-400 font-mono"></span>
+                                    </div>
+                                    <input type="range" min="0" max="20" value="0" @input="updateFilter('blur', $event.target.value)" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                                </div>
+                                
+                                <div class="bg-gray-900 rounded-lg p-3">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                        <span>Sepia</span>
+                                        <span x-text="filterValues.sepia + '%'" class="text-violet-400 font-mono"></span>
+                                    </div>
+                                    <input type="range" min="0" max="100" value="0" @input="updateFilter('sepia', $event.target.value)" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                                </div>
+                                
+                                <div class="bg-gray-900 rounded-lg p-3">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                        <span>Grayscale</span>
+                                        <span x-text="filterValues.grayscale + '%'" class="text-violet-400 font-mono"></span>
+                                    </div>
+                                    <input type="range" min="0" max="100" value="0" @input="updateFilter('grayscale', $event.target.value)" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                                </div>
+                                
+                                <div class="bg-gray-900 rounded-lg p-3 sm:col-span-2">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                        <span>Hue Rotate</span>
+                                        <span x-text="filterValues.hueRotate + '°'" class="text-violet-400 font-mono"></span>
+                                    </div>
+                                    <input type="range" min="0" max="360" value="0" @input="updateFilter('hueRotate', $event.target.value)" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-violet-500">
+                                </div>
+                            </div>
+                            
+                            <!-- Presets -->
+                            <div class="mt-3">
+                                <div class="text-xs text-gray-400 mb-2">Presets:</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" @click="filterValues = { brightness: 0, contrast: 0, saturation: 100, blur: 0, sepia: 0, grayscale: 0, hueRotate: 0 }" class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded-lg transition">Normal</button>
+                                    <button type="button" @click="filterValues = { brightness: 0, contrast: 0, saturation: 0, blur: 0, sepia: 0, grayscale: 100, hueRotate: 0 }" class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded-lg transition">B&W</button>
+                                    <button type="button" @click="filterValues = { brightness: 0, contrast: 0, saturation: 100, blur: 0, sepia: 100, grayscale: 0, hueRotate: 0 }" class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded-lg transition">Sepia</button>
+                                    <button type="button" @click="filterValues = { brightness: 10, contrast: 20, saturation: 80, blur: 0, sepia: 50, grayscale: 0, hueRotate: 0 }" class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded-lg transition">Vintage</button>
+                                    <button type="button" @click="filterValues = { brightness: 0, contrast: 10, saturation: 90, blur: 0, sepia: 0, grayscale: 0, hueRotate: 180 }" class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded-lg transition">Cool</button>
+                                    <button type="button" @click="filterValues = { brightness: 10, contrast: 10, saturation: 110, blur: 0, sepia: 30, grayscale: 0, hueRotate: 30 }" class="px-3 py-1.5 text-xs bg-gray-800 hover:bg-gray-700 rounded-lg transition">Warm</button>
+                                </div>
+                            </div>
+                            
+                            <button type="button" @click="filterValues = { brightness: 0, contrast: 0, saturation: 100, blur: 0, sepia: 0, grayscale: 0, hueRotate: 0 }" class="w-full py-2 text-sm text-gray-400 hover:text-gray-200 border border-gray-700 rounded-lg transition">↺ Reset All Filters</button>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <button type="submit" id="submit-btn"
                         class="hidden lg:flex w-full btn-primary py-4 rounded-2xl text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed transition items-center justify-center"

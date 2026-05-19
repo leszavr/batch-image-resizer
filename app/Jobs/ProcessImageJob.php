@@ -23,7 +23,7 @@ class ProcessImageJob implements ShouldQueue
 
     public function __construct(public readonly int $imageJobId)
     {
-        $this->onQueue(config('bir.queue', 'image-processing'));
+        $this->onQueue(config('ipp.queue', 'image-processing'));
     }
 
     public function handle(ImagePipelineService $pipeline): void
@@ -108,7 +108,7 @@ class ProcessImageJob implements ShouldQueue
             'completed_at'         => now(),
             'result_archive_path'  => $archivePath,
             'result_size_bytes'    => $archiveSize,
-            'expires_at'           => now()->addHours((int) config('bir.storage_ttl_hours', 24)),
+            'expires_at'           => now()->addHours((int) config('ipp.storage_ttl_hours', 24)),
         ]);
 
         // Clean up source files to save disk space

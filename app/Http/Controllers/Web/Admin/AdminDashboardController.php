@@ -47,6 +47,6 @@ class AdminDashboardController extends Controller
 
     private function staleThresholdMinutes(): int
     {
-        return max(30, (int) ceil(((int) config('bir.queue_timeout', 300)) / 60) * 6);
+        return max(30, (int) ceil(((int) config('ipp.queue_timeout', 300)) / 60) * 6);
     }
 }

@@ -16,8 +16,8 @@ class PlanCapabilitiesResolver
 
     public function forPlan(Plan $plan, bool $hasUnlimitedAccess = false): array
     {
-        $allFormats = array_values((array) config('bir.output_formats', []));
-        $allSteps = array_values((array) config('bir.pipeline_steps', []));
+        $allFormats = array_values((array) config('ipp.output_formats', []));
+        $allSteps = array_values((array) config('ipp.pipeline_steps', []));
         $featureFlags = $this->normalizeList($plan->feature_flags);
 
         $allowedFormats = $this->normalizeList($plan->allowed_formats);
@@ -67,8 +67,8 @@ class PlanCapabilitiesResolver
     private function getFreePlan(): Plan
     {
         return Plan::query()->where('slug', 'free')->first() ?? new Plan([
-            'allowed_formats' => (array) config('bir.output_formats', ['jpg', 'png']),
-            'allowed_operations' => (array) config('bir.pipeline_steps', ['resize', 'rotate', 'flip', 'crop']),
+                'allowed_formats' => (array) config('ipp.output_formats', ['jpg', 'png']),
+                'allowed_operations' => (array) config('ipp.pipeline_steps', ['resize', 'rotate', 'flip', 'crop', 'filter']),
             'watermark' => false,
             'priority_queue' => false,
             'api_access' => false,

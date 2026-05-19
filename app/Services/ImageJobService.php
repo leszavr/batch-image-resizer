@@ -72,7 +72,7 @@ class ImageJobService
             'rename_suffix'  => $options['rename_suffix'] ?? null,
             'rename_start_number' => (int) ($options['rename_start_number'] ?? 1),
             'total_files'    => count($files),
-            'expires_at'     => now()->addHours($plan->storage_ttl_hours ?? (int) config('bir.storage_ttl_hours', 24)),
+            'expires_at'     => now()->addHours($plan->storage_ttl_hours ?? (int) config('ipp.storage_ttl_hours', 24)),
         ]);
 
         // Upload source files
@@ -119,7 +119,7 @@ class ImageJobService
         // Dispatch queue job
         $priority = ($user && $capabilities['priority_queue'])
             ? 'high'
-            : config('bir.queue', 'image-processing');
+            : config('ipp.queue', 'image-processing');
 
         ProcessImageJob::dispatch($job->id)->onQueue($priority);
 
@@ -187,17 +187,44 @@ class ImageJobService
             ];
         }
 
+        // Filter
+        if (! empty($options['filters_enabled'])) {
+            $params = [
+                'brightness'  => (int) ($options['filter_brightness'] ?? 0),
+                'contrast'    => (int) ($options['filter_contrast'] ?? 0),
+                'saturation'  => (int) ($options['filter_saturation'] ?? 100),
+                'blur'        => (int) ($options['filter_blur'] ?? 0),
+                'sepia'       => (int) ($options['filter_sepia'] ?? 0),
+                'grayscale'   => (int) ($options['filter_grayscale'] ?? 0),
+                'hue_rotate'  => (int) ($options['filter_hue_rotate'] ?? 0),
+            ];
+
+            // Only add filter step if at least one filter is not at default value
+            $defaults = ['brightness' => 0, 'contrast' => 0, 'saturation' => 100, 'blur' => 0, 'sepia' => 0, 'grayscale' => 0, 'hue_rotate' => 0];
+            $hasActiveFilters = false;
+            foreach ($params as $key => $value) {
+                if ($value !== $defaults[$key]) {
+                    $hasActiveFilters = true;
+                    break;
+                }
+            }
+
+            if ($hasActiveFilters) {
+                $steps[] = ['step' => 'filter', 'params' => $params];
+            }
+        }
+
         return $steps;
     }
 
     private function getFreePlan(): Plan
     {
         return Plan::where('slug', 'free')->first() ?? new Plan([
-            'max_files_per_job' => (int) config('bir.max_files_free', 10),
-            'max_file_size_mb'  => (int) config('bir.max_file_size_free_mb', 10),
+            'max_files_per_job' => (int) config('ipp.max_files_free', 10),
+            'max_file_size_mb'  => (int) config('ipp.max_file_size_free_mb', 10),
             'daily_jobs_limit'  => 99,
             'priority_queue'    => false,
-            'storage_ttl_hours' => (int) config('bir.storage_ttl_hours', 24),
+            'storage_ttl_hours' => (int) config('ipp.storage_ttl_hours', 24),
         ]);
     }
 

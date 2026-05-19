@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\Admin\AdminPlanController;
 use App\Http\Controllers\Web\Admin\AdminStatisticsController;
 use App\Http\Controllers\Web\Admin\AdminUserController;
 use App\Http\Controllers\Web\ImageJobController;
+use App\Http\Controllers\Web\ToolsController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\PlanController;
 use App\Http\Controllers\Web\DashboardController;
@@ -140,3 +141,28 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
 // ── Plans & billing ──────────────────────────────────────────────────────────
 Route::get('/plans',                            [PlanController::class, 'index'])->name('plans.index');
+
+// ── Tools (Online Editors) ────────────────────────────────────────────────────
+Route::prefix('tools')->name('tools.')->group(function () {
+    // Index page with all tools
+    Route::get('/', [ToolsController::class, 'index'])->name('index');
+
+    // Individual tool pages
+    Route::get('/crop', [ToolsController::class, 'crop'])->name('crop');
+    Route::get('/rotate', [ToolsController::class, 'rotate'])->name('rotate');
+    Route::get('/flip', [ToolsController::class, 'flip'])->name('flip');
+    Route::get('/resize', [ToolsController::class, 'resize'])->name('resize');
+    Route::get('/brightness', [ToolsController::class, 'brightness'])->name('brightness');
+    Route::get('/contrast', [ToolsController::class, 'contrast'])->name('contrast');
+    Route::get('/saturation', [ToolsController::class, 'saturation'])->name('saturation');
+    Route::get('/exposure', [ToolsController::class, 'exposure'])->name('exposure');
+    Route::get('/temperature', [ToolsController::class, 'temperature'])->name('temperature');
+    Route::get('/gamma', [ToolsController::class, 'gamma'])->name('gamma');
+    Route::get('/clarity', [ToolsController::class, 'clarity'])->name('clarity');
+    Route::get('/filters', [ToolsController::class, 'filters'])->name('filters');
+
+    // API endpoints
+    Route::post('/process', [ToolsController::class, 'process'])->name('process');
+    Route::get('/preview/{session}/{file}/{ext}', [ToolsController::class, 'preview'])->name('preview');
+    Route::get('/download/{session}', [ToolsController::class, 'download'])->name('download');
+});

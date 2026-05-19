@@ -14,7 +14,7 @@ class CleanupExpiredJobs extends Command
      *
      * @var string
      */
-    protected $signature = 'bir:cleanup-expired-jobs 
+    protected $signature = 'ipp:cleanup-expired-jobs 
                             {--force : Force cleanup without confirmation}
                             {--dry-run : Show what would be cleaned without actually deleting}';
 

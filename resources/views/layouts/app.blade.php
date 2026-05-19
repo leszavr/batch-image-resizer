@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'BatchImageResizer') — {{ dbt('footer.copyright') }}</title>
+    <title>@yield('title', 'Image Processing Platform')</title>
     <meta name="description" content="@yield('description', dbt('meta.description'))">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @php
-        $birI18n = [
+        $ippI18n = [
             'upload' => [
                 'add_file' => dbt('js.upload.add_file'),
                 'form_not_found' => dbt('js.upload.form_not_found'),
@@ -27,7 +27,7 @@
         ];
     @endphp
     <script>
-        window.__BIR_I18N__ = @json($birI18n);
+        window.__IPP_I18N__ = @json($ippI18n);
     </script>
 </head>
 <body class="h-full bg-gray-950 text-gray-100 antialiased" x-data>
@@ -48,7 +48,7 @@
 
         {{-- Desktop nav --}}
         <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
-            <a href="{{ route('home') }}"    class="hover:text-white transition">{{ dbt('nav.tools') }}</a>
+            <a href="{{ route('tools.index') }}"    class="hover:text-white transition">{{ dbt('nav.tools') }}</a>
             <a href="{{ route('plans.index') }}" class="hover:text-white transition">{{ dbt('nav.plans') }}</a>
 
             <div class="flex items-center gap-2 text-xs">
@@ -109,9 +109,11 @@
 {{-- Footer --}}
 <footer class="border-t border-gray-800 mt-20 py-10 text-center text-sm text-gray-500">
     <div class="max-w-7xl mx-auto px-4">
-        <p>© {{ date('Y') }} BatchImageResizer — {{ dbt('footer.copyright') }}</p>
+        <p>© {{ date('Y') }} {{ dbt('brand') }} — {{ dbt('footer.copyright') }}</p>
     </div>
 </footer>
+
+@stack('scripts')
 
 </body>
 </html>
