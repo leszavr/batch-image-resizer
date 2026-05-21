@@ -47,7 +47,9 @@
                 </div>
 
                 {{-- Tool Controls --}}
-                @yield('tool-controls')
+                <div id="tool-controls">
+                    @yield('tool-controls')
+                </div>
             </div>
 
             {{-- Right: Preview Area --}}
@@ -112,6 +114,10 @@
     
     let currentSessionId = null;
     let originalImageData = null;
+    let currentFile = null;
+    let activeRequest = null;
+    let activeRequestId = 0;
+    let processDebounceTimer = null;
 
     // Drop zone handling
     const dropZone = document.getElementById('drop-zone');
@@ -119,6 +125,7 @@
     const uploadProgress = document.getElementById('upload-progress');
     const progressBar = document.getElementById('progress-bar');
     const uploadStatus = document.getElementById('upload-status');
+    const toolControls = document.getElementById('tool-controls');
 
     dropZone.addEventListener('click', () => fileInput.click());
     
@@ -158,6 +165,9 @@
             return;
         }
 
+        currentFile = file;
+        currentSessionId = null;
+
         // Show preview
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -167,28 +177,32 @@
             const imageInfo = document.getElementById('image-info');
             const dimensions = document.getElementById('dimensions');
             const fileSize = document.getElementById('file-size');
+            const compareBtn = document.getElementById('compare-btn');
+            const downloadBtn = document.getElementById('download-btn');
 
             originalImageData = e.target.result;
             originalPreview.src = e.target.result;
             originalPreview.classList.remove('hidden');
             resultPreview.classList.add('hidden');
+            resultPreview.removeAttribute('src');
             emptyState.classList.add('hidden');
             imageInfo.classList.remove('hidden');
+            compareBtn.classList.add('hidden');
+            downloadBtn.classList.add('hidden');
+            downloadBtn.href = '#';
             
             // Get image dimensions
             const img = new Image();
             img.onload = () => {
                 dimensions.textContent = `${img.width} × ${img.height}px`;
                 onImageLoaded(img.width, img.height);
+                processCurrentFile({ immediate: true });
             };
             img.src = e.target.result;
             
             fileSize.textContent = formatFileSize(file.size);
         };
         reader.readAsDataURL(file);
-
-        // Upload and process
-        uploadAndProcess(file);
     }
 
     function formatFileSize(bytes) {
@@ -197,6 +211,23 @@
         const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function processCurrentFile({ immediate = false } = {}) {
+        if (!currentFile) {
+            return;
+        }
+
+        window.clearTimeout(processDebounceTimer);
+
+        const run = () => uploadAndProcess(currentFile);
+
+        if (immediate) {
+            run();
+            return;
+        }
+
+        processDebounceTimer = window.setTimeout(run, 250);
     }
 
     function uploadAndProcess(file) {
@@ -213,12 +244,27 @@
             });
         }
 
+        const toolFiles = getToolFiles();
+        if (toolFiles) {
+            Object.keys(toolFiles).forEach(key => {
+                if (toolFiles[key] instanceof File) {
+                    formData.append(key, toolFiles[key]);
+                }
+            });
+        }
+
         uploadProgress.classList.remove('hidden');
         progressBar.style.width = '0%';
         uploadStatus.textContent = '{{ dbt('tools.upload.processing') }}';
         progressBar.classList.remove('bg-red-500');
 
+        if (activeRequest) {
+            activeRequest.abort();
+        }
+
         const xhr = new XMLHttpRequest();
+        const requestId = ++activeRequestId;
+        activeRequest = xhr;
         
         xhr.upload.addEventListener('progress', (e) => {
             if (e.lengthComputable) {
@@ -228,58 +274,110 @@
         });
 
         xhr.addEventListener('load', () => {
-            console.log('XHR Response:', xhr.status, xhr.responseText);
-            if (xhr.status === 200) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    
-                    if (response.success) {
-                        currentSessionId = response.session_id;
-                        progressBar.style.width = '100%';
-                        uploadStatus.textContent = '{{ dbt('tools.upload.complete') }}';
-                        
-                        // Show result
-                        const resultPreview = document.getElementById('result-preview');
-                        const compareBtn = document.getElementById('compare-btn');
-                        const downloadBtn = document.getElementById('download-btn');
-                        
-                        resultPreview.src = response.result_url;
-                        resultPreview.classList.remove('hidden');
-                        resultPreview.onload = () => {
-                            document.getElementById('original-preview').classList.add('hidden');
-                        };
-                        
-                        compareBtn.classList.remove('hidden');
-                        downloadBtn.href = response.download_url;
-                        downloadBtn.classList.remove('hidden');
-                        
-                        setTimeout(() => {
-                            uploadProgress.classList.add('hidden');
-                        }, 1000);
-                    } else {
-                        uploadStatus.textContent = response.error || '{{ dbt('tools.errors.processing_failed') }}';
-                        progressBar.classList.add('bg-red-500');
-                    }
-                } catch (e) {
-                    console.error('JSON parse error:', e);
-                    uploadStatus.textContent = '{{ dbt('tools.errors.processing_failed') }}';
-                    progressBar.classList.add('bg-red-500');
-                }
-            } else {
-                console.error('HTTP Error:', xhr.status, xhr.statusText);
-                uploadStatus.textContent = '{{ dbt('tools.errors.upload_failed') }} (HTTP ' + xhr.status + ')';
-                progressBar.classList.add('bg-red-500');
+            if (requestId !== activeRequestId) {
+                return;
             }
+
+            activeRequest = null;
+
+            let response = null;
+
+            try {
+                response = xhr.responseText ? JSON.parse(xhr.responseText) : null;
+            } catch (e) {
+                console.error('JSON parse error:', e);
+            }
+
+            if (xhr.status === 200 && response?.success) {
+                currentSessionId = response.session_id;
+                progressBar.style.width = '100%';
+                uploadStatus.textContent = '{{ dbt('tools.upload.complete') }}';
+                
+                // Show result
+                const resultPreview = document.getElementById('result-preview');
+                const compareBtn = document.getElementById('compare-btn');
+                const downloadBtn = document.getElementById('download-btn');
+                
+                resultPreview.src = response.result_url;
+                resultPreview.classList.remove('hidden');
+                resultPreview.onload = () => {
+                    document.getElementById('original-preview').classList.add('hidden');
+                };
+                
+                compareBtn.classList.remove('hidden');
+                downloadBtn.href = response.download_url;
+                downloadBtn.classList.remove('hidden');
+                
+                window.setTimeout(() => {
+                    if (!activeRequest) {
+                        uploadProgress.classList.add('hidden');
+                    }
+                }, 400);
+
+                return;
+            }
+
+            console.error('HTTP Error:', xhr.status, xhr.statusText, response);
+            uploadStatus.textContent = response?.error || '{{ dbt('tools.errors.processing_failed') }}';
+            progressBar.classList.add('bg-red-500');
         });
 
         xhr.addEventListener('error', () => {
+            if (requestId !== activeRequestId) {
+                return;
+            }
+
+            activeRequest = null;
             console.error('XHR Network Error');
             uploadStatus.textContent = '{{ dbt('tools.errors.upload_failed') }}';
             progressBar.classList.add('bg-red-500');
         });
 
+        xhr.addEventListener('abort', () => {
+            if (requestId !== activeRequestId) {
+                return;
+            }
+
+            activeRequest = null;
+        });
+
         xhr.open('POST', PROCESS_URL);
         xhr.send(formData);
+    }
+
+    function setupLivePreviewListeners() {
+        if (!toolControls) {
+            return;
+        }
+
+        toolControls.addEventListener('input', (event) => {
+            if (!currentFile || !(event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement || event.target instanceof HTMLTextAreaElement)) {
+                return;
+            }
+
+            processCurrentFile();
+        });
+
+        toolControls.addEventListener('change', (event) => {
+            if (!currentFile || !(event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement || event.target instanceof HTMLTextAreaElement)) {
+                return;
+            }
+
+            processCurrentFile();
+        });
+
+        toolControls.addEventListener('click', (event) => {
+            if (!currentFile) {
+                return;
+            }
+
+            const button = event.target.closest('button');
+            if (!button) {
+                return;
+            }
+
+            processCurrentFile();
+        });
     }
 
     function showOriginal() {
@@ -305,9 +403,15 @@
         return {};
     }
 
+    function getToolFiles() {
+        return {};
+    }
+
     function onImageLoaded(width, height) {
         // Override in specific tool views
     }
+
+    setupLivePreviewListeners();
 </script>
 
 @stack('tool-scripts')

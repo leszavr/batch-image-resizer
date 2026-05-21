@@ -152,6 +152,10 @@ Route::prefix('tools')->name('tools.')->group(function () {
     Route::get('/rotate', [ToolsController::class, 'rotate'])->name('rotate');
     Route::get('/flip', [ToolsController::class, 'flip'])->name('flip');
     Route::get('/resize', [ToolsController::class, 'resize'])->name('resize');
+        Route::get('/watermark', [ToolsController::class, 'watermark'])->name('watermark');
+        Route::get('/annotate', [ToolsController::class, 'annotate'])->name('annotate');
+        Route::get('/frame', [ToolsController::class, 'frame'])->name('frame');
+        Route::get('/enlarge', [ToolsController::class, 'enlarge'])->name('enlarge');
     Route::get('/brightness', [ToolsController::class, 'brightness'])->name('brightness');
     Route::get('/contrast', [ToolsController::class, 'contrast'])->name('contrast');
     Route::get('/saturation', [ToolsController::class, 'saturation'])->name('saturation');
@@ -159,7 +163,7 @@ Route::prefix('tools')->name('tools.')->group(function () {
     Route::get('/temperature', [ToolsController::class, 'temperature'])->name('temperature');
     Route::get('/gamma', [ToolsController::class, 'gamma'])->name('gamma');
     Route::get('/clarity', [ToolsController::class, 'clarity'])->name('clarity');
-    Route::get('/filters', [ToolsController::class, 'filters'])->name('filters');
+    Route::get('/blur', [ToolsController::class, 'blur'])->name('blur');
 
     // API endpoints
     Route::post('/process', [ToolsController::class, 'process'])->name('process');

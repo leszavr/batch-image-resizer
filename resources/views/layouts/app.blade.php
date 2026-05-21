@@ -7,6 +7,7 @@
     <title>@yield('title', 'Image Processing Platform')</title>
     <meta name="description" content="@yield('description', dbt('meta.description'))">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     @php
         $ippI18n = [
             'upload' => [
@@ -28,6 +29,13 @@
     @endphp
     <script>
         window.__IPP_I18N__ = @json($ippI18n);
+        // Initialize Feather Icons
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+        });
+        // Also replace when content is dynamically added
+        const observer = new MutationObserver(() => feather.replace());
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </head>
 <body class="h-full bg-gray-950 text-gray-100 antialiased" x-data>

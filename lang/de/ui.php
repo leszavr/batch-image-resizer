@@ -575,6 +575,24 @@ return array (
         'basic' => 'Basic Tools',
         'filters' => 'Filters & Effects',
       ),
+      'features' => 
+      array (
+        'dragdrop' => 
+        array (
+          'title' => 'Drag & Drop',
+          'desc' => 'Simply drag your image to start editing',
+        ),
+        'preview' => 
+        array (
+          'title' => 'Live Preview',
+          'desc' => 'See changes instantly before downloading',
+        ),
+        'download' => 
+        array (
+          'title' => 'Instant Download',
+          'desc' => 'Get your processed image in seconds',
+        ),
+      ),
       'back_to_tools' => 'Back to all tools',
       'upload' => 
       array (
@@ -605,6 +623,8 @@ return array (
         'settings' => 'Crop Settings',
         'width' => 'Width (px)',
         'height' => 'Height (px)',
+        'position_x' => 'X Position',
+        'position_y' => 'Y Position',
       ),
       'rotate' => 
       array (
@@ -629,6 +649,67 @@ return array (
         'settings' => 'Resize Settings',
         'width' => 'Width (px)',
         'height' => 'Height (px)',
+        'maintain_aspect' => 'Maintain aspect ratio',
+        'presets' => 'Quick presets:',
+      ),
+      'watermark' => 
+      array (
+        'name' => 'Add Watermark on Image',
+        'description' => 'Add text or logo watermark with position, size and opacity controls',
+        'settings' => 'Watermark Settings',
+        'type' => 'Watermark Type',
+        'type_text' => 'Text Watermark',
+        'type_image' => 'Image Watermark',
+        'text' => 'Watermark Text',
+        'color' => 'Text Color',
+        'upload_logo' => 'Upload Logo',
+        'upload_logo_hint' => 'PNG with transparency works best',
+        'position' => 'Position',
+        'top_left' => 'Top Left',
+        'top_right' => 'Top Right',
+        'bottom_left' => 'Bottom Left',
+        'bottom_right' => 'Bottom Right',
+        'center' => 'Center',
+        'size' => 'Size',
+        'opacity' => 'Opacity',
+        'offset_x' => 'Offset X',
+        'offset_y' => 'Offset Y',
+      ),
+      'annotate' => 
+      array (
+        'name' => 'Annotate on Image',
+        'description' => 'Draw lines, rectangles and arrows directly on your image',
+        'settings' => 'Annotation Settings',
+        'type' => 'Shape Type',
+        'line' => 'Line',
+        'rectangle' => 'Rectangle',
+        'arrow' => 'Arrow',
+        'color' => 'Color',
+        'thickness' => 'Thickness',
+        'opacity' => 'Opacity',
+        'diagonal_1' => 'Diagonal 1',
+        'diagonal_2' => 'Diagonal 2',
+      ),
+      'frame' => 
+      array (
+        'name' => 'Add Frame on Image',
+        'description' => 'Add a solid, double, or dashed border frame around your image',
+        'settings' => 'Frame Settings',
+        'style' => 'Frame Style',
+        'solid' => 'Solid',
+        'double' => 'Double',
+        'dashed' => 'Dashed',
+        'color' => 'Frame Color',
+        'thickness' => 'Frame Thickness',
+      ),
+      'enlarge' => 
+      array (
+        'name' => 'Enlarge Image',
+        'description' => 'Upscale images with interpolation while keeping visual quality',
+        'settings' => 'Enlarge Settings',
+        'scale' => 'Scale',
+        'original' => 'Original',
+        'result' => 'Result',
       ),
       'brightness' => 
       array (
@@ -683,6 +764,20 @@ return array (
         'soft' => 'Soft',
         'sharp' => 'Sharp',
       ),
+      'vibrance' => 
+      array (
+        'name' => 'Vibrance',
+        'description' => 'Boost muted colors while preserving skin tones',
+        'settings' => 'Vibrance Settings',
+        'value' => 'Vibrance',
+      ),
+      'blur' => 
+      array (
+        'name' => 'Blur Image',
+        'description' => 'Apply controllable blur to your image',
+        'settings' => 'Blur Settings',
+        'level' => 'Blur Level',
+      ),
       'filters' => 
       array (
         'name' => 'Photo Filters',
@@ -696,6 +791,9 @@ return array (
         'lighten' => 'Lighten',
         'low' => 'Low',
         'high' => 'High',
+        'light' => 'Light',
+        'medium' => 'Medium',
+        'heavy' => 'Heavy',
         'desaturate' => 'Desaturate',
         'vivid' => 'Vivid',
         'normal' => 'Normal',
