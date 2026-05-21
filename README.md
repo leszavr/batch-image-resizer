@@ -1,339 +1,137 @@
-# Image Processing Platform (IPP)
+# Batch Image Resizer (BIR)
 
-A powerful, web-based platform for batch image processing with support for resizing, conversion, cropping, rotation, mirroring, and AI-powered enhancements.
+Laravel-based web application for:
+1. Batch processing pipelines for multiple files.
+2. Interactive single-image tools with live preview.
+3. Plan-based capabilities, API access, and admin operations.
 
-## 🚀 Features
+## What the app does
 
-### Core Image Processing
-- **Batch Processing**: Process multiple images simultaneously
-- **Format Conversion**: JPG, PNG, WebP, AVIF, GIF, TIFF
-- **Resize**: Fit, Cover, Fixed dimensions, By width/height
-- **Crop**: Coordinate-based cropping with position control
-- **Rotate**: 90°, 180°, 270° rotation with automatic dimension handling
-- **Flip**: Horizontal and vertical mirroring
-- **Watermark**: Add text/image watermarks (plan-dependent)
+### Batch processor (main page)
+1. Upload multiple files in one job.
+2. Build processing pipeline (resize/rotate/flip/crop/filter/watermark).
+3. Choose output format and quality.
+4. Track async progress and download ZIP result.
+5. Save/load user presets.
 
-### Advanced Features
-- **Queue System**: Background processing with Laravel queues
-- **Priority Processing**: Premium plans get dedicated high-priority queue
-- **Multi-language Support**: Easy localization management via database
-- **Plan-based Access**: Feature restrictions based on subscription tier
-- **File Expiry**: Automatic cleanup of processed files after configurable TTL
-- **API Access**: RESTful API for programmatic image processing
+### Online tools (/tools)
+Current tools implemented:
+1. Crop Image
+2. Rotate Image
+3. Flip Image
+4. Resize Image
+5. Add Watermark on Image (text or logo)
+6. Annotate on Image (line, rectangle, arrow)
+7. Add Frame on Image (solid/double/dashed)
+8. Enlarge Image (upscale)
+9. Brightness
+10. Contrast
+11. Saturation
+12. Exposure
+13. Temperature
+14. Gamma
+15. Clarity
+16. Blur
 
-### Admin Panel
-- **User Management**: Role-based access control (User, Admin, Superadmin)
-- **Plan Management**: Flexible pricing tiers with customizable features
-- **Job Monitoring**: Real-time status tracking and manual intervention
-- **Analytics**: Usage statistics and revenue tracking
-- **Localization**: Built-in translation management system
+All tools use live preview with immediate re-processing on control changes.
 
-## 🛠 System Requirements
+### Access model
+1. Guest and authenticated job access via owner/session checks.
+2. Plan-based capabilities (formats, operations, watermark, API, priority queue).
+3. Admin area for jobs, plans, users, statistics, and localization management.
 
-### Minimum
-- PHP 8.2+
-- MySQL 8.0+ or MariaDB 10.5+
-- Composer 2.0+
-- Node.js 18+ and npm
-- 2GB RAM
-- 10GB disk space
+## Tech stack
+1. Laravel 11
+2. PHP 8.2+
+3. MySQL/MariaDB (typical deployment)
+4. Queue workers (database/redis)
+5. Intervention Image + GD/Imagick backend
+6. Blade + Tailwind + Alpine/Vite frontend
 
-### Recommended
-- PHP 8.3+
-- MySQL 8.0+ or PostgreSQL
-- Redis for queue management
-- 4GB+ RAM
-- 50GB+ SSD storage
-- CDN for static assets
+## Quick start (local)
 
-### PHP Extensions Required
-- mysqli or pdo_mysql
-- gd or imagick (imagick recommended)
-- fileinfo
-- mbstring
-- openssl
-- json
-- curl
-- zip
+1. Install dependencies:
+```bash
+composer install
+npm install
+```
 
-## 📦 Installation
+2. Configure environment:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-### Method 1: Manual Installation
+3. Set DB credentials in `.env`, then run:
+```bash
+php artisan migrate
+php artisan db:seed
+```
 
-1. **Clone repository**
-   ```bash
-   git clone https://github.com/yourorg/ipp.git
-   cd ipp
-   ```
+4. Start app:
+```bash
+php artisan serve
+npm run dev
+```
 
-2. **Install dependencies**
-   ```bash
-   composer install --no-dev --optimize-autoloader
-   npm ci && npm run build
-   ```
+5. Run queue worker (required for batch jobs):
+```bash
+php artisan queue:work --queue=image-processing --tries=3 --timeout=300
+```
 
-3. **Create environment file**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+6. Optional scheduler (cleanup/system tasks):
+```bash
+php artisan schedule:work
+```
 
-4. **Configure database** in `.env`:
-   ```
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=ipp
-   DB_USERNAME=ipp_user
-   DB_PASSWORD=your_secure_password
-   ```
+## Key configuration
 
-5. **Run migrations and seeders**
-   ```bash
-   php artisan migrate --force
-   php artisan db:seed
-   ```
-
-6. **Configure storage**
-   ```bash
-   php artisan storage:link
-   chmod -R 775 storage bootstrap/cache
-   chown -R www-data:www-data storage bootstrap/cache
-   ```
-
-7. **Setup queue worker** (add to supervisor/systemd):
-   ```bash
-   php artisan queue:work --queue=image-processing --sleep=3 --tries=3
-   ```
-
-8. **Configure cron** for scheduled tasks:
-   ```bash
-   * * * * * cd /path/to/ipp && php artisan schedule:run >> /dev/null 2>&1
-   ```
-
-### Method 2: Web Installer
-
-1. Upload files to your web server
-2. Ensure permissions on `storage/`, `bootstrap/cache/`, `public/uploads/`
-3. Navigate to `/install` in your browser
-4. Follow the step-by-step installation wizard
-5. The installer will:
-   - Check system requirements
-   - Test database connection
-   - Create initial admin user
-   - Generate configuration files
-   - Run migrations
-
-## ⚙️ Configuration
-
-### Environment Variables
-
-Key settings in `.env`:
+Main app settings are in `config/ipp.php` and related env variables:
 
 ```env
-APP_NAME="Image Processing Platform"
-APP_URL=https://your-domain.com
-
-# Database
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=ipp
-DB_USERNAME=your_user
-DB_PASSWORD=your_password
-
-# Queue (database, redis, sqs)
-QUEUE_CONNECTION=database
-
-# Cache (database, redis, file)
-CACHE_STORE=redis
-
-# File storage (local, s3)
-FILESYSTEM_DISK=local
-
-# IPP-specific settings
 IPP_MAX_FILE_SIZE_MB=50
 IPP_MAX_FILES_PER_JOB=100
 IPP_MAX_FILES_FREE=10
+IPP_MAX_FILE_SIZE_FREE_MB=10
 IPP_STORAGE_TTL_HOURS=24
 IPP_QUEUE=image-processing
 IPP_QUEUE_TIMEOUT=300
 ```
 
-### Plan Configuration
+Supported output formats (default):
+1. jpg
+2. png
+3. webp
+4. avif
+5. gif
+6. tiff
 
-Plans control user access to features. Default plan structure:
+## Routes overview
 
-| Feature | Free | Basic | Pro |
-|---------|------|-------|-----|
-| Max files/job | 10 | 50 | 100 |
-| Max file size | 10MB | 50MB | 100MB |
-| Daily jobs | 5 | 50 | Unlimited |
-| Storage TTL | 24h | 72h | 168h |
-| Priority queue | No | Yes | Yes |
-| API access | No | Yes | Yes |
-| Price | $0 | $9/mo | $29/mo |
+Web:
+1. `/` - batch processor
+2. `/tools/*` - online image tools
+3. `/plans`, `/dashboard`, `/history`, `/admin/*`
 
-## 🔧 Architecture
+API (Sanctum + plan.api_access middleware):
+1. `POST /api/jobs`
+2. `GET /api/jobs/{imageJob}`
+3. `GET /api/jobs/{imageJob}/download`
 
-```
-IPP/
-├── app/
-│   ├── Console/           # Artisan commands
-│   ├── Http/              # Controllers & Middleware
-│   │   ├── Controllers/Api/       # API endpoints
-│   │   └── Controllers/Web/       # Web routes
-│   │       └── Admin/             # Admin panel
-│   ├── ImagePipeline/     # Image processing engine
-│   ├── Jobs/              # Queue jobs
-│   ├── Models/            # Eloquent models
-│   ├── Services/          # Business logic
-│   └── Providers/         # Service providers
-├── config/ipp.php         # Platform configuration
-├── database/
-│   ├── migrations/
-│   └── seeders/
-├── resources/
-│   ├── css/               # Tailwind styles
-│   ├── js/                # Alpine.js & Vanilla JS
-│   └── views/             # Blade templates
-├── routes/
-│   ├── web.php
-│   └── api.php
-└── tests/
-```
+## Testing
 
-## 📊 Database Schema
-
-Key entities:
-- **users**: Registered users with plan assignments
-- **image_jobs**: Processing job records with status/pipeline
-- **image_job_files**: Individual file records with metadata
-- **plans**: Subscription tiers with feature flags
-- **subscriptions**: Plan subscriptions with billing status
-- **locales**: Supported languages
-- **translation_entries**: UI translations
-- **plan_translations**: Localized plan names/descriptions
-
-## 🔐 Security
-
-- CSRF protection on all forms
-- Rate limiting on API endpoints
-- Input validation and sanitization
-- SQL injection prevention via Eloquent
-- XSS protection via Blade's auto-escaping
-- File upload validation (MIME type check)
-- Secure password hashing (bcrypt)
-- Optional 2FA support
-
-## 🚀 Performance Optimization
-
-### Queue Configuration
-```php
-// config/queue.php - Redis recommended for production
-'default' => 'redis',
-
-'redis' => [
-    'driver' => 'redis',
-    'connection' => 'default',
-    'queue' => 'image-processing',
-    'retry_after' => 3600,
-],
-```
-
-### Caching Strategy
-- View caching in production
-- Config caching: `php artisan config:cache`
-- Route caching: `php artisan route:cache`
-- Query result caching for locales
-
-### Image Processing
-- Process images in background queue
-- Limit memory usage per job
-- Automatic cleanup of temp files
-- Optional: Use external AI service (RouterAI)
-
-## 📝 API Documentation
-
-### Authentication
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "password"
-}
-```
-
-### Create Processing Job
-```http
-POST /api/jobs
-Authorization: Bearer {token}
-Content-Type: multipart/form-data
-
-files[]: [binary]
-pipeline: [{"step":"resize","params":{"mode":"fit","width":1920}}]
-output_format: webp
-output_quality: 85
-```
-
-### Get Job Status
-```http
-GET /api/jobs/{uuid}
-Authorization: Bearer {token}
-```
-
-## 🧪 Testing
-
+Run all tests:
 ```bash
-# Run unit tests
 php artisan test
-
-# Run with coverage
-php artisan test --coverage
-
-# Feature tests only
-php artisan test --filter Feature
 ```
 
-## 📈 Monitoring
+Tools feature tests only:
+```bash
+php artisan test --filter=ToolsProcessingTest
+```
 
-### Logs
-- Application: `storage/logs/laravel.log`
-- Queue: `storage/logs/queue-worker.log`
-- Cleanup: `storage/logs/cleanup.log`
+## Notes
 
-### Metrics
-- Queue jobs processed per hour
-- Average processing time per file
-- Error rates by operation type
-- Storage usage trends
-
-### Admin Alerts
-Configure email notifications for:
-- Failed jobs exceeding threshold
-- Storage usage > 80%
-- Queue backlog > 100 jobs
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open Pull Request
-
-## 📜 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- Documentation: https://docs.yourdomain.com
-- Issues: https://github.com/yourorg/ipp/issues
-- Email: support@yourdomain.com
-
----
-
-Built with ❤️ using Laravel, Tailwind CSS, and Alpine.js
+1. Tools and batch pipeline are intentionally separate UX flows.
+2. Localization uses `dbt(...)` helper and `lang/*/ui.php` keys.
+3. Temporary job artifacts are stored locally and cleaned by TTL logic.
