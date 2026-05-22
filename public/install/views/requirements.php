@@ -10,8 +10,8 @@
     
     <div class="nav-buttons">
         <a href="?step=welcome" class="btn btn-secondary">← Back</a>
-        <a href="?step=database" class="btn btn-primary" id="next-btn" disabled>
+        <button type="button" class="btn btn-primary" id="next-btn" disabled>
             Checking...
-        </a>
+        </button>
     </div>
 </div>

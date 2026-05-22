@@ -37,11 +37,11 @@
 
         <div id="test-result" class="test-result"></div>
 
-        <div class="nav-buttons">
-            <a href="?step=requirements" class="btn btn-secondary">← Back</a>
-            <a href="?step=admin" class="btn btn-primary" id="next-btn" disabled>
-                Continue →
-            </a>
-        </div>
+    <div class="nav-buttons">
+        <a href="?step=requirements" class="btn btn-secondary">← Back</a>
+        <button type="submit" class="btn btn-primary" id="next-btn" disabled>
+            Continue →
+        </button>
+    </div>
     </form>
 </div>

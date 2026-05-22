@@ -65,10 +65,16 @@ async function checkRequirements() {
         });
         
         if (allPassed) {
-            nextBtn.disabled = false;
+            nextBtn.removeAttribute('disabled');
             nextBtn.innerHTML = 'Continue →';
+            nextBtn.onclick = function() {
+                window.location.href = '?step=database';
+            };
+            nextBtn.style.cursor = 'pointer';
         } else {
             nextBtn.innerHTML = 'Fix Requirements to Continue';
+            nextBtn.onclick = null;
+            nextBtn.style.cursor = 'not-allowed';
         }
         
     } catch (error) {
@@ -108,7 +114,12 @@ async function testDatabase() {
         
         if (data.success) {
             showResult(result, `Connected! MySQL ${data.version}`, true);
-            document.getElementById('next-btn').disabled = false;
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.removeAttribute('disabled');
+            nextBtn.onclick = function() {
+                window.location.href = '?step=admin';
+            };
+            nextBtn.style.cursor = 'pointer';
         } else {
             showResult(result, data.error, false);
         }
